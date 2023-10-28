@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.util.Arrays;
 
 public class SortProject {
     static int[] list;
@@ -12,15 +13,25 @@ public class SortProject {
         list = new int[n];
 
         for(int i=0; i<n;i++) {
-            list[i] = (int) (Math.random() * 1000000);
+            list[i] = (int) (Math.random() * 100000000);
         }
+        /*
         System.out.println("Random List");
         for (int i=0; i<list.length; i++) System.out.println(list[i]);
+         */
 
         mergeSort(list);
+        int[] newList = deepCopy(list);
+        Arrays.stream(newList).sorted();
 
         System.out.println("Sorted List");
-        for (int i=0; i<list.length; i++) System.out.println(list[i]);
+        for (int i=0; i<list.length; i++) {
+            System.out.println(list[i] + "  " + newList[i]);
+            if(list[i] != newList[i]) {
+                System.out.println("\nSort Failed");
+                break;
+            }
+        }
     }
 
     public static void selectionSort(int[] list) {
@@ -39,8 +50,17 @@ public class SortProject {
     }
     public static void mergeSort(int[] listA){
         int[] listB = deepCopy(list);
-        splitter(listB, 0, list.length, listA);
+        MergeWorker workerOne = new MergeWorker(listA, 0, listA.length/2, listB);
+        MergeWorker workerTwo = new MergeWorker(listA, listA.length/2, listA.length, listB);
+        workerOne.start();workerTwo.start();
 
+        try {
+            workerOne.join();
+            workerTwo.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        MergeWorker.merger(listB, 0, listA.length/2, listA.length, listA);
     }
 
     private static int[] deepCopy(int[] list){
@@ -49,31 +69,5 @@ public class SortProject {
             copy[i]=list[i];
         }
         return copy;
-    }
-
-    private static void splitter(int[] listB, int startIndex, int endIndex, int[] listA){
-        if(endIndex - startIndex <= 1) return;
-
-        int middleIndex = (endIndex + startIndex) / 2;
-        splitter(listA, startIndex, middleIndex, listB);
-        splitter(listA, middleIndex, endIndex, listB);
-
-        merger(listB, startIndex, middleIndex, endIndex, listA);
-    }
-
-    private static void merger(int[] constList, int startIndex, int middleIndex, int endIndex, int[] listerine){
-
-        int x = startIndex; int y = middleIndex;
-
-        for (int i=startIndex; i<endIndex; i++){
-            if(x < middleIndex && (y >= endIndex || constList[x] <= constList[y])){
-                listerine[i] = constList[x];
-                x++;
-            }
-            else {
-                listerine[i] = constList[y];
-                y++;
-            }
-        }
     }
 }
