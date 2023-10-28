@@ -22,7 +22,11 @@ public class SortProject {
 
         mergeSort(list);
         int[] newList = deepCopy(list);
-        Arrays.stream(newList).sorted();
+
+        selectionSort(newList);
+        for(int i=0; i<list.length; i++) System.out.println(newList[i]);
+
+
 
         System.out.println("Sorted List");
         for (int i=0; i<list.length; i++) {
@@ -50,16 +54,22 @@ public class SortProject {
     }
     public static void mergeSort(int[] listA){
         int[] listB = deepCopy(list);
-        MergeWorker workerOne = new MergeWorker(listA, 0, listA.length/2, listB);
-        MergeWorker workerTwo = new MergeWorker(listA, listA.length/2, listA.length, listB);
-        workerOne.start();workerTwo.start();
+        MergeWorker workerOne = new MergeWorker(listB, 0, listA.length/4, listA);
+        MergeWorker workerTwo = new MergeWorker(listB, listA.length/4, listA.length/2, listA);
+        MergeWorker workerThree = new MergeWorker(listB, listA.length/2, listA.length - listA.length/4, listA);
+        MergeWorker workerFour = new MergeWorker(listB, listA.length-listA.length/4, listA.length, listA);
+        workerOne.start();workerTwo.start();workerThree.start();workerFour.start();
 
         try {
             workerOne.join();
             workerTwo.join();
+            workerThree.join();
+            workerFour.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        MergeWorker.merger(listA, 0, listA.length/4, listA.length/2, listB);
+        MergeWorker.merger(listA, listA.length/2, listA.length - listA.length/4, listA.length, listB);
         MergeWorker.merger(listB, 0, listA.length/2, listA.length, listA);
     }
 
