@@ -24,11 +24,13 @@ public class MergeWorker extends Thread{
         merger(listB, startIndex, middleIndex, endIndex, listA);
     }
 
-    public static void merger(int[] constList, int startIndex, int middleIndex, int endIndex, int[] listerine){
+    public synchronized static void merger(int[] constList, int startIndex, int middleIndex, int endIndex, int[] listerine){
+        SortProject.mergeCalls++;
 
         int x = startIndex; int y = middleIndex;
 
         for (int i=startIndex; i<endIndex; i++){
+            SortProject.complexity++;
             if(x < middleIndex && (y >= endIndex || constList[x] <= constList[y])){
                 listerine[i] = constList[x];
                 x++;
