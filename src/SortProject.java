@@ -5,6 +5,7 @@ public class SortProject {
     static long complexity = 0;
     static int mergeCalls = 0;
     static int[] list;
+    static int minListSize = 10;
 
     public static void main(String[] args){
         String str;
@@ -28,7 +29,7 @@ public class SortProject {
         System.out.println("Complexity: " + complexity);
         System.out.println("Merge Calls: " + mergeCalls);
 
-        /*
+        ///*
         int[] newList = deepCopy(list);
 
 
@@ -48,7 +49,7 @@ public class SortProject {
                 break;
             }
         }
-        */
+        //*/
 
     }
 
@@ -69,38 +70,16 @@ public class SortProject {
     public static void mergeSort(int[] listA){
 
         int[] listB = deepCopy(list);
-        MergeWorker workerOne = new MergeWorker(listA, 0, listA.length/8, listB);
-        MergeWorker workerTwo = new MergeWorker(listA, listA.length/8, listA.length/4, listB);
-        MergeWorker workerThree = new MergeWorker(listA, listA.length/4, listA.length - listA.length/2 - listA.length/8, listB);
-        MergeWorker workerFour = new MergeWorker(listA, listA.length-listA.length/2 - listA.length/8, listA.length/2, listB);
-        MergeWorker workerFive = new MergeWorker(listA, listA.length/2, listA.length/2 + listA.length/8, listB);
-        MergeWorker workerSix = new MergeWorker(listA, listA.length/2 + listA.length/8, listA.length - listA.length/4, listB);
-        MergeWorker workerSeven = new MergeWorker(listA, listA.length - listA.length/4, listA.length - listA.length/8, listB);
-        MergeWorker workerEight = new MergeWorker(listA, listA.length - listA.length/8, listA.length, listB);
+        MergeWorker workerPrime = new MergeWorker(listA, 0, listA.length/8, listB, 1);
 
-        workerOne.start();workerTwo.start();workerThree.start();workerFour.start(); workerFive.start(); workerSix.start(); workerSeven.start(); workerEight.start();
+        workerPrime.start();
 
         try {
-            workerOne.join();
-            workerTwo.join();
-            workerThree.join();
-            workerFour.join();
-            workerFive.join();
-            workerSix.join();
-            workerSeven.join();
-            workerEight.join();
+            workerPrime.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        MergeWorker.merger(listB, 0, listA.length/8, listA.length/4, listA);
-        MergeWorker.merger(listB, listA.length/4, listA.length/2 - listA.length/8, listA.length/2, listA);
-        MergeWorker.merger(listB, listA.length/2, listA.length/2 + listA.length/8, listA.length - listA.length/4, listA);
-        MergeWorker.merger(listB, listA.length - listA.length/4, listA.length - listA.length/8, listA.length, listA);
 
-        MergeWorker.merger(listA, 0, listA.length/4, listA.length/2, listB);
-        MergeWorker.merger(listA, listA.length/2, listA.length - listA.length/4, listA.length, listB);
-
-        MergeWorker.merger(listB, 0, listA.length/2, listA.length, listA);
     }
 
     private static int[] deepCopy(int[] list){
